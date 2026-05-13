@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Model Generator — Lucky Sevens Studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bungee+Inline&family=DM+Mono:wght@400;500&family=Playfair+Display:ital,wght@1,700;1,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='model-generator.css') }}">
+</head>
+<body class="generator-body">
+    <div class="grain"></div>
+
+    <!-- Header -->
+    <header class="studio-header">
+        <nav class="studio-nav">
+            <div class="nav-brand">
+                <span class="nav-icon">⚙️</span>
+                <span>Lucky Sevens Studio</span>
+            </div>
+            <div class="nav-links">
+                <a href="/" class="nav-link">Play</a>
+                <a href="/dashboard" class="nav-link">Analytics</a>
+                <a href="/model-generator" class="nav-link active">Model Lab</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="studio-main">
+        <!-- Hero Section -->
+        <section class="gen-hero">
+            <div class="hero-content">
+                <h1 class="hero-title">🤖 Game Model Generator</h1>
+                <p class="hero-desc">AI-powered optimization engine. Define your target metrics and let the system generate optimal reel configurations.</p>
+                <div class="hero-badge">BETA — Internal Tooling</div>
+            </div>
+        </section>
+
+        <!-- Control Panel -->
+        <section class="gen-control-panel">
+            <div class="panel-header">
+                <span class="panel-icon">📊</span>
+                <h2>Configuration Builder</h2>
+            </div>
+
+            <!-- Input Sliders -->
+            <div class="input-group">
+                <!-- Target RTP Slider -->
+                <div class="slider-container">
+                    <div class="slider-label">
+                        <span class="label-text">Target RTP</span>
+                        <span class="label-unit">%</span>
+                    </div>
+                    <input type="range" id="target-rtp" min="80" max="98" step="0.1" value="93.83" class="slider-input">
+                    <div class="slider-display">
+                        <span id="rtp-value" class="display-value">93.83</span>
+                        <span class="display-unit">%</span>
+                    </div>
+                    <div class="slider-info">Long-run return to player</div>
+                </div>
+
+                <!-- Target Volatility Slider -->
+                <div class="slider-container">
+                    <div class="slider-label">
+                        <span class="label-text">Target Volatility (σ)</span>
+                        <span class="label-unit">std dev</span>
+                    </div>
+                    <input type="range" id="target-volatility" min="0.5" max="15" step="0.1" value="2.39" class="slider-input">
+                    <div class="slider-display">
+                        <span id="vol-value" class="display-value">2.39</span>
+                        <span class="display-unit">σ</span>
+                    </div>
+                    <div class="slider-info">Risk-reward profile (higher = more swings)</div>
+                </div>
+
+                <!-- Target Hit Frequency Slider -->
+                <div class="slider-container">
+                    <div class="slider-label">
+                        <span class="label-text">Target Hit Frequency</span>
+                        <span class="label-unit">%</span>
+                    </div>
+                    <input type="range" id="target-hit-freq" min="20" max="80" step="0.5" value="58" class="slider-input">
+                    <div class="slider-display">
+                        <span id="hit-value" class="display-value">58.00</span>
+                        <span class="display-unit">%</span>
+                    </div>
+                    <div class="slider-info">How often any win occurs</div>
+                </div>
+            </div>
+
+            <!-- Generation Controls -->
+            <div class="generation-controls">
+                <!-- Theme Selector -->
+                <div class="theme-selector">
+                    <span class="control-label">Theme:</span>
+                    <div class="theme-buttons">
+                        <button class="theme-btn active" data-theme="neon">Neon</button>
+                        <button class="theme-btn" data-theme="midnight">Midnight</button>
+                        <button class="theme-btn" data-theme="gold">Gold Rush</button>
+                    </div>
+                </div>
+
+                <!-- Generation Button -->
+                <button id="generate-btn" class="generate-button">
+                    <span class="btn-icon">✨</span>
+                    <span class="btn-text">Generate Optimal Model</span>
+                    <span class="btn-status"></span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Generation Progress -->
+        <section id="progress-section" class="gen-progress-section hidden">
+            <div class="progress-card">
+                <div class="progress-header">
+                    <span class="progress-icon">🔄</span>
+                    <span class="progress-title">Optimizing Reel Configuration</span>
+                </div>
+                <div class="progress-spinner"></div>
+                <div class="progress-text">
+                    <span id="progress-iteration" class="iteration-counter">Iteration: 1/200</span>
+                    <span id="progress-fitness" class="fitness-score">Fitness: —</span>
+                </div>
+                <div class="optimization-chart" id="optimization-chart"></div>
+            </div>
+        </section>
+
+        <!-- Results Panel -->
+        <section id="results-section" class="gen-results-section hidden">
+            <div class="results-header">
+                <h2 class="results-title">Generated Model</h2>
+                <span class="results-status-badge success">✓ Configuration Generated</span>
+            </div>
+
+            <!-- Generated Config -->
+            <div class="config-display">
+                <div class="config-card rtp-card">
+                    <div class="card-icon">📊</div>
+                    <div class="card-content">
+                        <div class="card-label">RTP</div>
+                        <div id="result-rtp" class="card-value">93.83%</div>
+                        <div class="card-detail">Return to Player</div>
+                    </div>
+                </div>
+
+                <div class="config-card volatility-card">
+                    <div class="card-icon">📈</div>
+                    <div class="card-content">
+                        <div class="card-label">Volatility</div>
+                        <div id="result-vol" class="card-value">2.39σ</div>
+                        <div id="result-vol-class" class="card-detail">Medium Risk</div>
+                    </div>
+                </div>
+
+                <div class="config-card hit-card">
+                    <div class="card-icon">🎯</div>
+                    <div class="card-content">
+                        <div class="card-label">Hit Frequency</div>
+                        <div id="result-hit" class="card-value">58.0%</div>
+                        <div class="card-detail">Win Rate</div>
+                    </div>
+                </div>
+
+                <div class="config-card exposure-card">
+                    <div class="card-icon">⚡</div>
+                    <div class="card-content">
+                        <div class="card-label">Max Exposure</div>
+                        <div id="result-exposure" class="card-value">×50</div>
+                        <div class="card-detail">Per Spin</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reel Weights -->
+            <div class="weights-display">
+                <h3 class="weights-title">🎰 Generated Reel Weights</h3>
+                <div class="weights-grid" id="weights-grid">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+            <!-- Optimization Timeline -->
+            <div class="timeline-display">
+                <h3 class="timeline-title">⏱️ Optimization Timeline</h3>
+                <div class="timeline-content">
+                    <div class="timeline-stat">
+                        <span class="timeline-label">Total Iterations:</span>
+                        <span id="timeline-iterations" class="timeline-value">200</span>
+                    </div>
+                    <div class="timeline-stat">
+                        <span class="timeline-label">Best Fitness Score:</span>
+                        <span id="timeline-fitness" class="timeline-value">0.45</span>
+                    </div>
+                    <div class="timeline-stat">
+                        <span class="timeline-label">Generation Time:</span>
+                        <span id="timeline-time" class="timeline-value">152 ms</span>
+                    </div>
+                    <div class="timeline-stat">
+                        <span class="timeline-label">Optimization Rate:</span>
+                        <span id="timeline-rate" class="timeline-value">1.32 iters/ms</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="results-actions">
+                <button id="apply-model-btn" class="action-btn apply-btn">
+                    <span class="action-icon">🎯</span>
+                    Apply to Game
+                </button>
+                <button id="export-model-btn" class="action-btn export-btn">
+                    <span class="action-icon">💾</span>
+                    Export Config
+                </button>
+                <button id="regenerate-btn" class="action-btn regen-btn">
+                    <span class="action-icon">🔄</span>
+                    Try Again
+                </button>
+            </div>
+        </section>
+
+        <!-- Info Panel -->
+        <section class="gen-info-panel">
+            <div class="info-card">
+                <h3 class="info-title">ℹ️ How It Works</h3>
+                <ul class="info-list">
+                    <li><strong>Define Targets:</strong> Set your desired RTP, volatility, and hit frequency</li>
+                    <li><strong>Random Search:</strong> Generate 200 random reel configurations</li>
+                    <li><strong>Evaluate:</strong> Calculate theoretical metrics for each candidate</li>
+                    <li><strong>Optimize:</strong> Select the configuration closest to your targets</li>
+                    <li><strong>Export:</strong> Use the generated weights in your live game</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3 class="info-title">⚙️ Technical Details</h3>
+                <ul class="info-list">
+                    <li><strong>RTP:</strong> Mathematical expectation per unit wagered</li>
+                    <li><strong>Volatility (σ):</strong> Standard deviation of returns</li>
+                    <li><strong>Hit Frequency:</strong> P(any win) = P(triple) + P(pair)</li>
+                    <li><strong>Fitness Function:</strong> Weighted multi-objective optimization</li>
+                    <li><strong>Reel Slots:</strong> 9 total slots per reel, each symbol ≥1</li>
+                </ul>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="studio-footer">
+        <div class="footer-content">
+            <span class="footer-text">Lucky Sevens Studio — Game Model Generator v1.0</span>
+            <span class="footer-divider">|</span>
+            <span class="footer-text">For entertainment & math demonstration only</span>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='model-generator.js') }}"></script>
+</body>
+</html>
