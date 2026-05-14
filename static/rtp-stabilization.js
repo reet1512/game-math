@@ -243,7 +243,7 @@ const RTP_STABILIZATION = {
     const chartWidth = w - padding.left - padding.right;
     const chartHeight = h - padding.top - padding.bottom;
 
-    this.ctx.strokeStyle = 'rgba(157, 78, 221, 0.1)';
+    this.ctx.strokeStyle = 'rgba(148, 163, 184, 0.12)';
     this.ctx.lineWidth = 1;
 
     // Vertical grid lines
@@ -272,7 +272,7 @@ const RTP_STABILIZATION = {
     const padding = { top: 40, right: 40, bottom: 60, left: 60 };
 
     // Axes
-    this.ctx.strokeStyle = 'rgba(157, 78, 221, 0.3)';
+    this.ctx.strokeStyle = 'rgba(148, 163, 184, 0.26)';
     this.ctx.lineWidth = 2;
     this.ctx.beginPath();
     this.ctx.moveTo(padding.left, h - padding.bottom);
@@ -288,14 +288,14 @@ const RTP_STABILIZATION = {
     this.ctx.save();
     this.ctx.translate(15, h / 2);
     this.ctx.rotate(-Math.PI / 2);
-    this.ctx.fillStyle = '#8b949e';
+    this.ctx.fillStyle = '#cbd5e1';
     this.ctx.font = '12px DM Mono';
     this.ctx.textAlign = 'center';
     this.ctx.fillText('RTP %', 0, 0);
     this.ctx.restore();
 
     // X-axis label (Spins)
-    this.ctx.fillStyle = '#8b949e';
+    this.ctx.fillStyle = '#cbd5e1';
     this.ctx.font = '12px DM Mono';
     this.ctx.textAlign = 'center';
     this.ctx.fillText('Spins', w / 2, h - 10);
@@ -401,13 +401,13 @@ const RTP_STABILIZATION = {
       const y = padding.top + chartHeight - ((lastPoint.rtp - 80) / 20) * chartHeight;
 
       // Glow
-      this.ctx.fillStyle = 'rgba(167, 139, 250, 0.2)';
+      this.ctx.fillStyle = 'rgba(56, 189, 248, 0.16)';
       this.ctx.beginPath();
       this.ctx.arc(x, y, 12, 0, Math.PI * 2);
       this.ctx.fill();
 
       // Dot
-      this.ctx.fillStyle = 'rgba(167, 139, 250, 1)';
+      this.ctx.fillStyle = 'rgba(56, 189, 248, 0.92)';
       this.ctx.beginPath();
       this.ctx.arc(x, y, 5, 0, Math.PI * 2);
       this.ctx.fill();
@@ -422,7 +422,7 @@ const RTP_STABILIZATION = {
     const y = padding.top + chartHeight - ((targetRTP - 80) / 20) * chartHeight;
 
     // Dashed line
-    this.ctx.strokeStyle = 'rgba(0, 255, 136, 0.4)';
+    this.ctx.strokeStyle = 'rgba(245, 158, 11, 0.38)';
     this.ctx.lineWidth = 2;
     this.ctx.setLineDash([5, 5]);
     this.ctx.lineCap = 'round';
@@ -435,7 +435,7 @@ const RTP_STABILIZATION = {
     this.ctx.setLineDash([]);
 
     // Label
-    this.ctx.fillStyle = 'rgba(0, 255, 136, 0.6)';
+    this.ctx.fillStyle = 'rgba(245, 158, 11, 0.82)';
     this.ctx.font = 'bold 11px DM Mono';
     this.ctx.textAlign = 'right';
     this.ctx.fillText(`Target ${targetRTP.toFixed(2)}%`, padding.left + chartWidth - 10, y - 8);

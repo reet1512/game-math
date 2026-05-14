@@ -206,14 +206,15 @@ const RTP_STABILIZATION = {
 
     const w = this.canvas.width / window.devicePixelRatio;
     const h = this.canvas.height / window.devicePixelRatio;
+    const scale = this.getRtpScale();
 
     // Clear
     this.ctx.fillStyle = 'rgba(9, 10, 20, 0.5)';
     this.ctx.fillRect(0, 0, w, h);
 
     // Draw grid and axes
-    this.drawGrid(w, h);
-    this.drawAxes(w, h);
+    this.drawGrid(w, h, scale);
+    this.drawAxes(w, h, scale);
   },
 
   /**
@@ -223,27 +224,45 @@ const RTP_STABILIZATION = {
     const w = this.canvas.width / window.devicePixelRatio;
     const h = this.canvas.height / window.devicePixelRatio;
     const padding = { top: 40, right: 40, bottom: 60, left: 60 };
+    const scale = this.getRtpScale();
 
     // Clear
     this.ctx.fillStyle = 'rgba(9, 10, 20, 0.5)';
     this.ctx.fillRect(0, 0, w, h);
 
     // Draw components
-    this.drawGrid(w, h);
-    this.drawAxes(w, h);
-    this.drawData(frameIndex, padding, w, h);
+    this.drawGrid(w, h, scale);
+    this.drawAxes(w, h, scale);
+    this.drawData(frameIndex, padding, w, h, scale);
     this.drawLegend(padding, w, h);
+  },
+
+  /**
+   * Choose a Y-axis range that keeps the current target and observed RTP visible.
+   */
+  getRtpScale() {
+    const target = Number.isFinite(this.state.targetRTP) ? this.state.targetRTP : 93.83;
+    const observed = Number.isFinite(this.state.actualRTP) ? this.state.actualRTP : target;
+    const top = 100;
+    const visibleFloor = Math.min(target, observed, 80) - 20;
+    const bottom = Math.max(0, Math.floor(visibleFloor / 5) * 5);
+    return { min: bottom, max: top };
+  },
+
+  mapRtpToY(rtp, padding, chartHeight, scale) {
+    const clamped = Math.max(scale.min, Math.min(scale.max, rtp));
+    return padding.top + chartHeight - ((clamped - scale.min) / (scale.max - scale.min)) * chartHeight;
   },
 
   /**
    * Draw grid lines
    */
-  drawGrid(w, h) {
+  drawGrid(w, h, scale) {
     const padding = { top: 40, right: 40, bottom: 60, left: 60 };
     const chartWidth = w - padding.left - padding.right;
     const chartHeight = h - padding.top - padding.bottom;
 
-    this.ctx.strokeStyle = 'rgba(157, 78, 221, 0.1)';
+    this.ctx.strokeStyle = 'rgba(148, 163, 184, 0.12)';
     this.ctx.lineWidth = 1;
 
     // Vertical grid lines
@@ -268,11 +287,11 @@ const RTP_STABILIZATION = {
   /**
    * Draw axes with labels
    */
-  drawAxes(w, h) {
+  drawAxes(w, h, scale) {
     const padding = { top: 40, right: 40, bottom: 60, left: 60 };
 
     // Axes
-    this.ctx.strokeStyle = 'rgba(157, 78, 221, 0.3)';
+    this.ctx.strokeStyle = 'rgba(148, 163, 184, 0.26)';
     this.ctx.lineWidth = 2;
     this.ctx.beginPath();
     this.ctx.moveTo(padding.left, h - padding.bottom);
@@ -288,14 +307,14 @@ const RTP_STABILIZATION = {
     this.ctx.save();
     this.ctx.translate(15, h / 2);
     this.ctx.rotate(-Math.PI / 2);
-    this.ctx.fillStyle = '#8b949e';
+    this.ctx.fillStyle = '#cbd5e1';
     this.ctx.font = '12px DM Mono';
     this.ctx.textAlign = 'center';
     this.ctx.fillText('RTP %', 0, 0);
     this.ctx.restore();
 
     // X-axis label (Spins)
-    this.ctx.fillStyle = '#8b949e';
+    this.ctx.fillStyle = '#cbd5e1';
     this.ctx.font = '12px DM Mono';
     this.ctx.textAlign = 'center';
     this.ctx.fillText('Spins', w / 2, h - 10);
@@ -304,7 +323,7 @@ const RTP_STABILIZATION = {
     this.ctx.font = '11px DM Mono';
     this.ctx.textAlign = 'right';
     for (let i = 0; i <= this.config.gridLines; i++) {
-      const yVal = 80 + (20 / this.config.gridLines) * i; // RTP range 80-100%
+      const yVal = scale.min + ((scale.max - scale.min) / this.config.gridLines) * i;
       const y = h - padding.bottom - (i / this.config.gridLines) * (h - padding.top - padding.bottom);
       this.ctx.fillStyle = '#8b949e';
       this.ctx.fillText(yVal.toFixed(0) + '%', padding.left - 10, y + 4);
@@ -323,7 +342,7 @@ const RTP_STABILIZATION = {
   /**
    * Draw data lines with glow effect
    */
-  drawData(frameIndex, padding, w, h) {
+  drawData(frameIndex, padding, w, h, scale) {
     if (this.simulationData.length === 0) return;
 
     const chartWidth = w - padding.left - padding.right;
@@ -335,19 +354,20 @@ const RTP_STABILIZATION = {
       padding,
       chartWidth,
       chartHeight,
+      scale,
       'rgba(167, 139, 250, 0.6)',
       'rgba(167, 139, 250, 0.3)',
       2
     );
 
     // Draw target RTP line
-    this.drawTargetLine(padding, chartWidth, chartHeight);
+    this.drawTargetLine(padding, chartWidth, chartHeight, scale);
   },
 
   /**
    * Draw a glowing line through the data points
    */
-  drawGlowingLine(data, padding, chartWidth, chartHeight, strokeColor, glowColor, lineWidth) {
+  drawGlowingLine(data, padding, chartWidth, chartHeight, scale, strokeColor, glowColor, lineWidth) {
     if (data.length < 2) return;
 
     // Glow layers
@@ -362,7 +382,7 @@ const RTP_STABILIZATION = {
       for (let i = 0; i < data.length; i++) {
         const point = data[i];
         const x = padding.left + (point.spin / this.config.maxSpins) * chartWidth;
-        const y = padding.top + chartHeight - ((point.rtp - 80) / 20) * chartHeight;
+        const y = this.mapRtpToY(point.rtp, padding, chartHeight, scale);
 
         if (i === 0) {
           this.ctx.moveTo(x, y);
@@ -384,7 +404,7 @@ const RTP_STABILIZATION = {
     for (let i = 0; i < data.length; i++) {
       const point = data[i];
       const x = padding.left + (point.spin / this.config.maxSpins) * chartWidth;
-      const y = padding.top + chartHeight - ((point.rtp - 80) / 20) * chartHeight;
+      const y = this.mapRtpToY(point.rtp, padding, chartHeight, scale);
 
       if (i === 0) {
         this.ctx.moveTo(x, y);
@@ -398,16 +418,16 @@ const RTP_STABILIZATION = {
     if (data.length > 0) {
       const lastPoint = data[data.length - 1];
       const x = padding.left + (lastPoint.spin / this.config.maxSpins) * chartWidth;
-      const y = padding.top + chartHeight - ((lastPoint.rtp - 80) / 20) * chartHeight;
+      const y = this.mapRtpToY(lastPoint.rtp, padding, chartHeight, scale);
 
       // Glow
-      this.ctx.fillStyle = 'rgba(167, 139, 250, 0.2)';
+      this.ctx.fillStyle = 'rgba(56, 189, 248, 0.16)';
       this.ctx.beginPath();
       this.ctx.arc(x, y, 12, 0, Math.PI * 2);
       this.ctx.fill();
 
       // Dot
-      this.ctx.fillStyle = 'rgba(167, 139, 250, 1)';
+      this.ctx.fillStyle = 'rgba(56, 189, 248, 0.92)';
       this.ctx.beginPath();
       this.ctx.arc(x, y, 5, 0, Math.PI * 2);
       this.ctx.fill();
@@ -417,12 +437,12 @@ const RTP_STABILIZATION = {
   /**
    * Draw target RTP reference line
    */
-  drawTargetLine(padding, chartWidth, chartHeight) {
+  drawTargetLine(padding, chartWidth, chartHeight, scale) {
     const targetRTP = this.state.targetRTP;
-    const y = padding.top + chartHeight - ((targetRTP - 80) / 20) * chartHeight;
+    const y = this.mapRtpToY(targetRTP, padding, chartHeight, scale);
 
     // Dashed line
-    this.ctx.strokeStyle = 'rgba(0, 255, 136, 0.4)';
+    this.ctx.strokeStyle = 'rgba(245, 158, 11, 0.38)';
     this.ctx.lineWidth = 2;
     this.ctx.setLineDash([5, 5]);
     this.ctx.lineCap = 'round';
@@ -435,7 +455,7 @@ const RTP_STABILIZATION = {
     this.ctx.setLineDash([]);
 
     // Label
-    this.ctx.fillStyle = 'rgba(0, 255, 136, 0.6)';
+    this.ctx.fillStyle = 'rgba(245, 158, 11, 0.82)';
     this.ctx.font = 'bold 11px DM Mono';
     this.ctx.textAlign = 'right';
     this.ctx.fillText(`Target ${targetRTP.toFixed(2)}%`, padding.left + chartWidth - 10, y - 8);
@@ -473,6 +493,22 @@ const RTP_STABILIZATION = {
 
     this.ctx.fillStyle = 'rgba(0, 255, 136, 0.7)';
     this.ctx.fillText('Theoretical RTP', legendX + 180, legendY + 3);
+  },
+  
+  /**
+   * Programmatically update the target RTP used by the visualizer.
+   * Redraws metrics and the chart target line.
+   */
+  setTargetRTP(value) {
+    const v = parseFloat(value);
+    if (!Number.isFinite(v)) return;
+    this.state.targetRTP = v;
+    this.updateMetrics();
+    if (this.simulationData && this.simulationData.length > 0) {
+      this.drawChart(this.simulationData.length);
+    } else {
+      this.drawInitialChart();
+    }
   },
 
   /**
@@ -538,11 +574,35 @@ const RTP_STABILIZATION = {
 
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
+  // Prefer a manual input override if present (e.g. #target-rtp)
+  const targetInput = document.getElementById('target-rtp');
+
   // Wait for theoretical data to be available
   const initWithDelay = () => {
     if (window.currentGameData?.theoretical) {
-      RTP_STABILIZATION.state.targetRTP = window.currentGameData.theoretical.rtp_pct;
+      const defaultRtp = window.currentGameData.theoretical.rtp_pct;
+
+      // If an input is present and has a parsable value, prefer it
+      if (targetInput && targetInput.value) {
+        const parsed = parseFloat(targetInput.value);
+        RTP_STABILIZATION.state.targetRTP = Number.isFinite(parsed) ? parsed : defaultRtp;
+      } else {
+        RTP_STABILIZATION.state.targetRTP = defaultRtp;
+      }
+
       RTP_STABILIZATION.init();
+
+      // Listen for runtime changes to the input and update the visualizer
+      if (targetInput) {
+        targetInput.addEventListener('input', (e) => {
+          const v = parseFloat(e.target.value);
+          if (Number.isFinite(v)) RTP_STABILIZATION.setTargetRTP(v);
+        });
+        targetInput.addEventListener('change', (e) => {
+          const v = parseFloat(e.target.value);
+          if (Number.isFinite(v)) RTP_STABILIZATION.setTargetRTP(v);
+        });
+      }
     } else {
       setTimeout(initWithDelay, 100);
     }

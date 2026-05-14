@@ -1,18 +1,18 @@
 /* Lucky Sevens — Analytics dashboard */
 
 const SYMBOL_COLORS = {
-  diamond: '#7fb4d4',
-  seven:   '#e54c3c',
-  star:    '#f0c674',
-  lemon:   '#d4d161',
-  cherry:  '#c4476b',
+  diamond: '#60a5fa',
+  seven:   '#38bdf8',
+  star:    '#94a3b8',
+  lemon:   '#f59e0b',
+  cherry:  '#22d3ee',
 };
 
-const CREAM = '#f5ead0';
-const CREAM_DIM = 'rgba(245, 234, 208, 0.6)';
-const BRASS = '#c9a25e';
-const BRASS_BRIGHT = '#f0c674';
-const GRID = 'rgba(201, 162, 94, 0.12)';
+const CREAM = '#e2e8f0';
+const CREAM_DIM = 'rgba(226, 232, 240, 0.62)';
+const BRASS = '#64748b';
+const BRASS_BRIGHT = '#cbd5e1';
+const GRID = 'rgba(148, 163, 184, 0.14)';
 
 Chart.defaults.font.family = "'DM Mono', monospace";
 Chart.defaults.font.size = 11;

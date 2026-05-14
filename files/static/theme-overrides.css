@@ -1,0 +1,285 @@
+/* Tech theme overrides for analytics + model lab only */
+:root {
+  --ink: #0b1020;
+  --burgundy: #0f172a;
+  --burgundy-dark: #060914;
+  --cream: #e2e8f0;
+  --cream-soft: rgba(226, 232, 240, 0.72);
+  --brass: #64748b;
+  --brass-bright: #cbd5e1;
+  --brass-deep: rgba(148, 163, 184, 0.35);
+  --neon: #38bdf8;
+  --jade: #22d3ee;
+  --shadow: rgba(0, 0, 0, 0.45);
+
+  --theme-neon-accent: #38bdf8;
+  --theme-neon-secondary: #f59e0b;
+
+  --gen-neon-purple: #38bdf8;
+  --gen-neon-pink: #0ea5e9;
+  --gen-neon-cyan: #67e8f9;
+  --gen-neon-gold: #f59e0b;
+  --gen-dark-bg: rgba(11, 16, 32, 0.78);
+  --gen-card-bg: rgba(15, 23, 42, 0.78);
+  --gen-border-glow: rgba(148, 163, 184, 0.18);
+  --gen-text-primary: var(--cream);
+  --gen-text-secondary: var(--cream-soft);
+
+  --rtp-primary: #38bdf8;
+  --rtp-accent: #f59e0b;
+  --rtp-glow: rgba(56, 189, 248, 0.18);
+  --rtp-grid: rgba(148, 163, 184, 0.12);
+  --rtp-target: #67e8f9;
+}
+
+body.dashboard-body,
+body.generator-body {
+  background:
+    radial-gradient(circle at top left, rgba(56, 189, 248, 0.08), transparent 28%),
+    radial-gradient(circle at top right, rgba(245, 158, 11, 0.05), transparent 22%),
+    linear-gradient(180deg, #050816 0%, #0b1020 52%, #050816 100%);
+}
+
+.dashboard-body .top-bar,
+.generator-body .studio-header {
+  background: rgba(8, 13, 26, 0.72);
+  border-bottom-color: rgba(148, 163, 184, 0.16);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(16px);
+}
+
+.dashboard-body .brand-mark,
+.generator-body .nav-icon {
+  background: rgba(15, 23, 42, 0.95);
+  border-color: rgba(56, 189, 248, 0.5);
+  color: var(--neon);
+  box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.12), 0 0 18px rgba(56, 189, 248, 0.15);
+}
+
+.dashboard-body .brand-name,
+.generator-body .nav-brand {
+  color: var(--cream);
+  text-shadow: none;
+}
+
+.dashboard-body .nav-link,
+.generator-body .nav-link {
+  color: rgba(226, 232, 240, 0.68);
+}
+
+.dashboard-body .nav-link:hover,
+.dashboard-body .nav-link.active,
+.generator-body .nav-link:hover,
+.generator-body .nav-link.active {
+  color: var(--neon);
+  border-bottom-color: var(--neon);
+  text-shadow: none;
+}
+
+.dashboard-body .big-card,
+.dashboard-body .dash-card,
+.dashboard-body .ai-analyst-section,
+.dashboard-body .math-config-viewer,
+.dashboard-body #rtp-stabilization,
+.generator-body .gen-control-panel,
+.generator-body .gen-hero,
+.generator-body .results-card,
+.generator-body .analysis-card,
+.generator-body .rate-panel,
+.generator-body .mode-panel,
+.generator-body .summary-panel {
+  background: rgba(10, 15, 28, 0.76) !important;
+  border: 1px solid rgba(148, 163, 184, 0.16) !important;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.03) !important;
+  backdrop-filter: blur(12px);
+}
+
+.dashboard-body .hero-title,
+.generator-body .hero-title {
+  background: linear-gradient(135deg, #e2e8f0 0%, #38bdf8 60%, #f59e0b 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.dashboard-body .hero-sub,
+.generator-body .hero-desc,
+.dashboard-body .bc-sub,
+.dashboard-body .ls-label,
+.dashboard-body .rtp-metric-label,
+.generator-body .label-unit,
+.generator-body .slider-info,
+.generator-body .hero-desc,
+.generator-body .hero-badge {
+  color: rgba(226, 232, 240, 0.68) !important;
+}
+
+.dashboard-body .bc-value,
+.dashboard-body .stamp-value,
+.dashboard-body .rtp-metric-value,
+.dashboard-body .ls-value,
+.generator-body .display-value,
+.generator-body .results-status-badge,
+.generator-body .metric-value {
+  color: var(--cream) !important;
+}
+
+.dashboard-body .bc-value,
+.dashboard-body .ls-value,
+.dashboard-body .rtp-metric.target .rtp-metric-value,
+.generator-body .display-value,
+.generator-body .mode-toggle.active,
+.generator-body .results-status-badge {
+  text-shadow: none !important;
+}
+
+.dashboard-body .rtp-title,
+.dashboard-body .config-viewer-title,
+.generator-body .panel-header,
+.generator-body .mode-toggle.active {
+  color: var(--cream) !important;
+}
+
+.dashboard-body .rtp-badge,
+.generator-body .hero-badge,
+.generator-body .mode-toggle.active,
+.generator-body .results-status-badge {
+  background: rgba(56, 189, 248, 0.08) !important;
+  border: 1px solid rgba(56, 189, 248, 0.22) !important;
+  color: var(--neon) !important;
+}
+
+.dashboard-body .rtp-control-btn,
+.dashboard-body .config-btn,
+.dashboard-body .dash-cta,
+.dashboard-body .reset-btn,
+.generator-body .action-btn,
+.generator-body .export-btn,
+.generator-body .mode-toggle,
+.generator-body .rate-action-btn {
+  background: rgba(15, 23, 42, 0.72) !important;
+  border: 1px solid rgba(148, 163, 184, 0.2) !important;
+  color: rgba(226, 232, 240, 0.9) !important;
+  box-shadow: none !important;
+}
+
+.dashboard-body .rtp-control-btn:hover,
+.dashboard-body .config-btn:hover,
+.dashboard-body .dash-cta:hover,
+.dashboard-body .reset-btn:hover,
+.generator-body .action-btn:hover,
+.generator-body .export-btn:hover,
+.generator-body .mode-toggle:hover,
+.generator-body .rate-action-btn:hover {
+  border-color: rgba(56, 189, 248, 0.42) !important;
+  background: rgba(56, 189, 248, 0.08) !important;
+  color: var(--cream) !important;
+}
+
+.dashboard-body .rtp-control-btn.active,
+.generator-body .mode-toggle.active {
+  background: rgba(56, 189, 248, 0.12) !important;
+  border-color: rgba(56, 189, 248, 0.35) !important;
+  color: var(--neon) !important;
+}
+
+.dashboard-body .rtp-dashboard-controls {
+  margin: 12px 0 6px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  border-radius: 10px;
+  background: rgba(15, 23, 42, 0.56);
+  border: 1px solid rgba(148, 163, 184, 0.14);
+}
+
+.dashboard-body .rtp-dashboard-controls label,
+.dashboard-body #target-rtp-display {
+  color: rgba(226, 232, 240, 0.8) !important;
+}
+
+.dashboard-body .slider-input,
+.generator-body .slider-input {
+  background: linear-gradient(90deg, rgba(56, 189, 248, 0.16) 0%, rgba(245, 158, 11, 0.08) 100%) !important;
+}
+
+.dashboard-body .slider-input::-webkit-slider-thumb,
+.generator-body .slider-input::-webkit-slider-thumb,
+.dashboard-body .slider-input::-moz-range-thumb,
+.generator-body .slider-input::-moz-range-thumb {
+  background: radial-gradient(circle, var(--neon) 0%, rgba(56, 189, 248, 0.75) 100%) !important;
+  border-color: rgba(56, 189, 248, 0.85) !important;
+  box-shadow: 0 0 14px rgba(56, 189, 248, 0.25) !important;
+}
+
+.dashboard-body .rtp-chart-container,
+.generator-body .chart-panel,
+.dashboard-body .chart-wrap,
+.generator-body .results-chart,
+.generator-body .analysis-chart {
+  background: rgba(8, 13, 26, 0.72) !important;
+  border-color: rgba(148, 163, 184, 0.14) !important;
+}
+
+.dashboard-body .rtp-metric,
+.generator-body .slider-display,
+.generator-body .stat-card,
+.generator-body .summary-item {
+  background: rgba(15, 23, 42, 0.62) !important;
+  border-color: rgba(148, 163, 184, 0.14) !important;
+}
+
+.dashboard-body .rtp-metric.current .rtp-metric-value,
+.generator-body .display-value,
+.generator-body .metric-value.primary {
+  color: var(--neon) !important;
+}
+
+.dashboard-body .rtp-metric.target .rtp-metric-value,
+.generator-body .metric-value.warning {
+  color: var(--rtp-target) !important;
+}
+
+.dashboard-body .rtp-metric.spins .rtp-metric-value,
+.generator-body .metric-value.accent {
+  color: var(--brass-bright) !important;
+}
+
+.dashboard-body .rtp-metric.convergence .rtp-metric-value,
+.generator-body .metric-value.neutral {
+  color: rgba(226, 232, 240, 0.78) !important;
+}
+
+.dashboard-body .rtp-legend-color.actual {
+  background: linear-gradient(90deg, #38bdf8, #0ea5e9);
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.18);
+}
+
+.dashboard-body .rtp-legend-color.target {
+  background: linear-gradient(90deg, #f59e0b, #cbd5e1);
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.14);
+}
+
+.dashboard-body .rtp-progress,
+.dashboard-body .rtp-info,
+.generator-body .slider-info,
+.generator-body .results-summary,
+.generator-body .upload-dropzone {
+  background: rgba(8, 13, 26, 0.64) !important;
+  border-color: rgba(148, 163, 184, 0.14) !important;
+}
+
+.dashboard-body .rtp-progress-fill {
+  background: linear-gradient(90deg, #38bdf8, #0ea5e9);
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.18);
+}
+
+.dashboard-body .ai-status-badge,
+.generator-body .tag,
+.generator-body .pill {
+  background: rgba(15, 23, 42, 0.7) !important;
+  color: rgba(226, 232, 240, 0.82) !important;
+  border-color: rgba(148, 163, 184, 0.18) !important;
+}
