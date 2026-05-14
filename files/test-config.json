@@ -1,0 +1,25 @@
+{
+  "config_name": "High Volatility Premium",
+  "rtp_pct": 94.5,
+  "std_dev": 8.2,
+  "volatility_class": "high",
+  "hit_freq": 32.5,
+  "reel_weights": {
+    "diamond": 1,
+    "seven": 2,
+    "star": 3,
+    "lemon": 8,
+    "cherry": 16
+  },
+  "payouts": {
+    "diamond": 150,
+    "seven": 60,
+    "star": 20,
+    "lemon": 3,
+    "cherry": 2
+  },
+  "target_volatility": 8.5,
+  "max_exposure": 2450,
+  "optimization_notes": "Designed for high-volatility players with premium symbol rarity",
+  "version": "1.0"
+}

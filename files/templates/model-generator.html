@@ -13,6 +13,20 @@
 <body class="generator-body">
     <div class="grain"></div>
 
+    <!-- Hidden SVG Gradients -->
+    <svg style="display: none;">
+        <defs>
+            <linearGradient id="quality-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" style="stop-color:#00d9ff;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#9d4edd;stop-opacity:1" />
+            </linearGradient>
+            <linearGradient id="rate-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" style="stop-color:#ff5c7c;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#00d9ff;stop-opacity:1" />
+            </linearGradient>
+        </defs>
+    </svg>
+
     <!-- Header -->
     <header class="studio-header">
         <nav class="studio-nav">
@@ -40,13 +54,31 @@
 
         <!-- Control Panel -->
         <section class="gen-control-panel">
-            <div class="panel-header">
-                <span class="panel-icon">📊</span>
-                <h2>Configuration Builder</h2>
+            <!-- Mode Toggle -->
+            <div class="mode-toggle-container">
+                <button class="mode-toggle active" data-mode="build" onclick="switchMode('build')">
+                    <span class="toggle-icon">⚙️</span>
+                    <span>Build Manually</span>
+                </button>
+                <button class="mode-toggle" data-mode="import" onclick="switchMode('import')">
+                    <span class="toggle-icon">📤</span>
+                    <span>Import Config</span>
+                </button>
+                <button class="mode-toggle" data-mode="rate" onclick="switchMode('rate')">
+                    <span class="toggle-icon">⭐</span>
+                    <span>Rate Config</span>
+                </button>
             </div>
 
-            <!-- Input Sliders -->
-            <div class="input-group">
+            <!-- BUILD MODE: Configuration Builder -->
+            <div id="build-mode" class="mode-panel active">
+                <div class="panel-header">
+                    <span class="panel-icon">📊</span>
+                    <h2>Configuration Builder</h2>
+                </div>
+
+                <!-- Input Sliders -->
+                <div class="input-group">
                 <!-- Target RTP Slider -->
                 <div class="slider-container">
                     <div class="slider-label">
@@ -109,6 +141,180 @@
                     <span class="btn-status"></span>
                 </button>
             </div>
+            </div>
+
+            <!-- IMPORT MODE: Document Upload -->
+            <div id="import-mode" class="mode-panel hidden">
+                <div class="panel-header">
+                    <span class="panel-icon">📤</span>
+                    <h2>Import Configuration</h2>
+                </div>
+
+                <!-- Upload Zone -->
+                <div class="import-upload-zone" id="importUploadZone">
+                    <div class="upload-icon-large">📁</div>
+                    <p class="upload-title-text">Drag & drop your JSON config</p>
+                    <p class="upload-subtitle-text">or click to browse</p>
+                    <input type="file" id="importFileInput" class="import-file-input" accept=".json,.txt,.csv" />
+                </div>
+
+                <!-- Analysis Results -->
+                <div id="importAnalysisContainer" class="import-analysis-container hidden">
+                    <div class="import-analysis-result">
+                        <div class="import-result-header">
+                            <h3 class="import-result-title">Configuration Detected</h3>
+                            <div id="importConfidence" class="import-confidence-badge"></div>
+                        </div>
+                        
+                        <div class="import-result-summary" id="importSummary"></div>
+                        
+                        <div class="import-result-grid">
+                            <div class="import-result-item">
+                                <span class="import-result-label">RTP</span>
+                                <span class="import-result-value" id="importRTP">—</span>
+                            </div>
+                            <div class="import-result-item">
+                                <span class="import-result-label">Volatility</span>
+                                <span class="import-result-value" id="importVolatility">—</span>
+                            </div>
+                            <div class="import-result-item">
+                                <span class="import-result-label">Hit Freq</span>
+                                <span class="import-result-value" id="importHitFreq">—</span>
+                            </div>
+                            <div class="import-result-item">
+                                <span class="import-result-label">Strategy</span>
+                                <span class="import-result-value" id="importStrategy">—</span>
+                            </div>
+                        </div>
+
+                        <button id="importLoadBtn" class="import-load-button">
+                            <span>Load & Generate</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RATE MODE: AI Config Rater -->
+            <div id="rate-mode" class="mode-panel hidden">
+                <div class="panel-header">
+                    <span class="panel-icon">⭐</span>
+                    <h2>AI Configuration Rater</h2>
+                </div>
+
+                <!-- Upload Zone for Rating -->
+                <div class="rate-upload-zone" id="rateUploadZone">
+                    <div class="upload-icon-large">🔍</div>
+                    <p class="upload-title-text">Upload config for AI evaluation</p>
+                    <p class="upload-subtitle-text">Get a comprehensive quality rating and recommendations</p>
+                    <input type="file" id="rateFileInput" class="import-file-input" accept=".json,.txt,.csv" />
+                </div>
+
+                <!-- Rating Results -->
+                <div id="rateResultsContainer" class="rate-results-container hidden">
+                    <div class="rate-analysis-result">
+                        <!-- Overall Rating Card -->
+                        <div class="rate-overall-card">
+                            <div class="rate-score-circle">
+                                <svg viewBox="0 0 120 120" class="rate-gauge-svg">
+                                    <circle cx="60" cy="60" r="50" class="rate-gauge-background"></circle>
+                                    <circle cx="60" cy="60" r="50" class="rate-gauge-fill" id="rateGaugeFill"></circle>
+                                </svg>
+                                <div class="rate-score-display">
+                                    <span id="rateOverallScore" class="rate-score-number">—</span>
+                                    <span class="rate-score-max">/100</span>
+                                </div>
+                            </div>
+                            <div class="rate-overall-info">
+                                <h3 id="rateOverallTitle" class="rate-overall-title">Quality Assessment</h3>
+                                <p id="rateOverallSummary" class="rate-overall-summary"></p>
+                            </div>
+                        </div>
+
+                        <!-- Rating Categories Grid -->
+                        <div class="rate-categories-grid">
+                            <div class="rate-category-item">
+                                <div class="rate-category-header">
+                                    <span class="rate-category-icon">💰</span>
+                                    <span class="rate-category-name">RTP Fairness</span>
+                                </div>
+                                <div class="rate-category-meter">
+                                    <div class="rate-category-bar" id="rateRTPBar"></div>
+                                </div>
+                                <div class="rate-category-footer">
+                                    <span class="rate-category-score" id="rateRTPScore">—</span>
+                                    <span class="rate-category-feedback" id="rateRTPFeedback"></span>
+                                </div>
+                            </div>
+
+                            <div class="rate-category-item">
+                                <div class="rate-category-header">
+                                    <span class="rate-category-icon">📊</span>
+                                    <span class="rate-category-name">Volatility Balance</span>
+                                </div>
+                                <div class="rate-category-meter">
+                                    <div class="rate-category-bar" id="rateVolBar"></div>
+                                </div>
+                                <div class="rate-category-footer">
+                                    <span class="rate-category-score" id="rateVolScore">—</span>
+                                    <span class="rate-category-feedback" id="rateVolFeedback"></span>
+                                </div>
+                            </div>
+
+                            <div class="rate-category-item">
+                                <div class="rate-category-header">
+                                    <span class="rate-category-icon">🎯</span>
+                                    <span class="rate-category-name">Hit Frequency</span>
+                                </div>
+                                <div class="rate-category-meter">
+                                    <div class="rate-category-bar" id="rateHitBar"></div>
+                                </div>
+                                <div class="rate-category-footer">
+                                    <span class="rate-category-score" id="rateHitScore">—</span>
+                                    <span class="rate-category-feedback" id="rateHitFeedback"></span>
+                                </div>
+                            </div>
+
+                            <div class="rate-category-item">
+                                <div class="rate-category-header">
+                                    <span class="rate-category-icon">⚙️</span>
+                                    <span class="rate-category-name">Configuration</span>
+                                </div>
+                                <div class="rate-category-meter">
+                                    <div class="rate-category-bar" id="rateConfigBar"></div>
+                                </div>
+                                <div class="rate-category-footer">
+                                    <span class="rate-category-score" id="rateConfigScore">—</span>
+                                    <span class="rate-category-feedback" id="rateConfigFeedback"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recommendations -->
+                        <div class="rate-recommendations">
+                            <h3 class="rate-recommendations-title">🚀 AI Recommendations</h3>
+                            <ul id="rateRecommendations" class="rate-recommendations-list"></ul>
+                        </div>
+
+                        <!-- Detailed Metrics -->
+                        <div class="rate-detailed-metrics">
+                            <h3 class="rate-metrics-title">📋 Detailed Metrics</h3>
+                            <div id="rateDetailedMetrics" class="rate-metrics-content"></div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="rate-actions">
+                            <button id="rateImportBtn" class="rate-action-btn import-rating">
+                                <span class="rate-action-icon">📤</span>
+                                <span>Use This Config</span>
+                            </button>
+                            <button id="rateExportBtn" class="rate-action-btn export-rating">
+                                <span class="rate-action-icon">💾</span>
+                                <span>Export Report</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <!-- Generation Progress -->
@@ -132,6 +338,225 @@
             <div class="results-header">
                 <h2 class="results-title">Generated Model</h2>
                 <span class="results-status-badge success">✓ Configuration Generated</span>
+            </div>
+
+            <!-- Target Feasibility Indicator -->
+            <div class="feasibility-indicator">
+                <div class="feasibility-icon">📍</div>
+                <div class="feasibility-content">
+                    <div class="feasibility-label">Target Feasibility</div>
+                    <div id="feasibility-status" class="feasibility-status">Feasible</div>
+                </div>
+                <div id="feasibility-badge" class="feasibility-badge feasible">Feasible</div>
+            </div>
+
+            <!-- Optimization Accuracy Panel -->
+            <div class="analytics-grid">
+                <div class="accuracy-card">
+                    <div class="accuracy-header">
+                        <span class="accuracy-icon">📊</span>
+                        <span class="accuracy-title">RTP Accuracy</span>
+                    </div>
+                    <div class="accuracy-meter">
+                        <div id="rtp-accuracy-bar" class="accuracy-bar"></div>
+                    </div>
+                    <div class="accuracy-value">
+                        <span id="rtp-accuracy-pct">99.8</span>%
+                    </div>
+                </div>
+
+                <div class="accuracy-card">
+                    <div class="accuracy-header">
+                        <span class="accuracy-icon">📈</span>
+                        <span class="accuracy-title">Volatility Accuracy</span>
+                    </div>
+                    <div class="accuracy-meter">
+                        <div id="vol-accuracy-bar" class="accuracy-bar"></div>
+                    </div>
+                    <div class="accuracy-value">
+                        <span id="vol-accuracy-pct">87.5</span>%
+                    </div>
+                </div>
+
+                <div class="accuracy-card">
+                    <div class="accuracy-header">
+                        <span class="accuracy-icon">🎯</span>
+                        <span class="accuracy-title">Hit Frequency Accuracy</span>
+                    </div>
+                    <div class="accuracy-meter">
+                        <div id="hit-accuracy-bar" class="accuracy-bar"></div>
+                    </div>
+                    <div class="accuracy-value">
+                        <span id="hit-accuracy-pct">98.0</span>%
+                    </div>
+                </div>
+
+                <div class="accuracy-card constraint-card">
+                    <div class="accuracy-header">
+                        <span class="accuracy-icon">⚙️</span>
+                        <span class="accuracy-title">Constraint Satisfaction</span>
+                    </div>
+                    <div class="constraint-status">
+                        <div id="constraint-badge" class="constraint-badge balanced">BALANCED</div>
+                    </div>
+                    <div class="accuracy-value">
+                        <span id="constraint-score">73</span>/100
+                    </div>
+                </div>
+            </div>
+
+            <!-- Target vs Generated Comparison -->
+            <div class="comparison-panel">
+                <h3 class="comparison-title">📊 Target vs Generated Analysis</h3>
+                <div class="comparison-grid">
+                    <div class="comparison-item">
+                        <div class="comparison-column">
+                            <div class="column-header">TARGET</div>
+                            <div class="metric-row">
+                                <span class="metric-label">RTP</span>
+                                <span id="target-rtp-display" class="metric-value">93.83%</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="metric-label">Volatility</span>
+                                <span id="target-vol-display" class="metric-value">2.39σ</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="metric-label">Hit Frequency</span>
+                                <span id="target-hit-display" class="metric-value">58.00%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="comparison-item">
+                        <div class="comparison-column">
+                            <div class="column-header">GENERATED</div>
+                            <div class="metric-row">
+                                <span class="metric-label">RTP</span>
+                                <span id="gen-rtp-display" class="metric-value">93.95%</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="metric-label">Volatility</span>
+                                <span id="gen-vol-display" class="metric-value">2.21σ</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="metric-label">Hit Frequency</span>
+                                <span id="gen-hit-display" class="metric-value">58.50%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="comparison-item">
+                        <div class="comparison-column">
+                            <div class="column-header">DELTA</div>
+                            <div class="metric-row">
+                                <span class="metric-label">RTP</span>
+                                <span id="delta-rtp" class="metric-value delta">+0.12%</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="metric-label">Volatility</span>
+                                <span id="delta-vol" class="metric-value delta">-0.18σ</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="metric-label">Hit Frequency</span>
+                                <span id="delta-hit" class="metric-value delta">+0.50%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Config Quality Score -->
+            <div class="quality-score-panel">
+                <div class="quality-header">Configuration Quality Metrics</div>
+                <div class="quality-display">
+                    <div class="quality-circle">
+                        <svg viewBox="0 0 120 120" class="quality-gauge">
+                            <defs>
+                                <linearGradient id="quality-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" style="stop-color:#00d9ff;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#9d4edd;stop-opacity:1" />
+                                </linearGradient>
+                            </defs>
+                            <circle cx="60" cy="60" r="50" class="gauge-background"></circle>
+                            <circle id="quality-gauge-fill" cx="60" cy="60" r="50" class="gauge-fill" style="stroke-dashoffset: 40;"></circle>
+                        </svg>
+                        <div class="quality-score-value">
+                            <span id="quality-score">82</span><span class="quality-score-max">/100</span>
+                        </div>
+                    </div>
+                    <div class="quality-breakdown">
+                        <div class="quality-metric">
+                            <span class="quality-metric-label">RTP Closeness</span>
+                            <div class="quality-mini-bar">
+                                <div id="quality-rtp-bar" class="quality-mini-fill" style="width: 99%;"></div>
+                            </div>
+                            <span class="quality-metric-pct">99%</span>
+                        </div>
+                        <div class="quality-metric">
+                            <span class="quality-metric-label">Volatility Closeness</span>
+                            <div class="quality-mini-bar">
+                                <div id="quality-vol-bar" class="quality-mini-fill" style="width: 75%;"></div>
+                            </div>
+                            <span class="quality-metric-pct">75%</span>
+                        </div>
+                        <div class="quality-metric">
+                            <span class="quality-metric-label">Hit Frequency Closeness</span>
+                            <div class="quality-mini-bar">
+                                <div id="quality-hit-bar" class="quality-mini-fill" style="width: 92%;"></div>
+                            </div>
+                            <span class="quality-metric-pct">92%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Enhanced Fitness Graph -->
+            <div class="fitness-graph-panel">
+                <h3 class="fitness-graph-title">⚡ Optimization Convergence</h3>
+                <div class="fitness-graph-container">
+                    <div id="fitness-graph-canvas" class="fitness-graph-canvas"></div>
+                </div>
+                <div class="fitness-legend">
+                    <div class="legend-item">
+                        <span class="legend-color" style="background: linear-gradient(180deg, rgba(157, 78, 221, 0.8) 0%, rgba(0, 217, 255, 0.3) 100%);"></span>
+                        <span>Fitness Score Evolution</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Generation Metrics Panel -->
+            <div class="metrics-panel">
+                <h3 class="metrics-title">📈 Generation Metrics</h3>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-icon">🔢</div>
+                        <div class="metric-info">
+                            <div class="metric-name">Total Iterations</div>
+                            <div id="metrics-iterations" class="metric-number">5000</div>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">⏱️</div>
+                        <div class="metric-info">
+                            <div class="metric-name">Generation Time</div>
+                            <div id="metrics-time" class="metric-number">152 ms</div>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">📊</div>
+                        <div class="metric-info">
+                            <div class="metric-name">Reel Size</div>
+                            <div id="metrics-reel-size" class="metric-number">30</div>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">⚡</div>
+                        <div class="metric-info">
+                            <div class="metric-name">Convergence Rate</div>
+                            <div id="metrics-convergence" class="metric-number">32.89 iters/ms</div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Generated Config -->
