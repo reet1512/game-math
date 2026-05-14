@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lucky Sevens — Slot Parlour</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bungee+Inline&family=DM+Mono:wght@400;500&family=Playfair+Display:ital,wght@1,700;1,900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+
+<div class="grain"></div>
+
+<header class="top-bar">
+  <div class="brand">
+    <div class="brand-mark">★</div>
+    <div class="brand-text">
+      <div class="brand-name">Lucky Sevens</div>
+      <div class="brand-sub">Slot parlour · est. 2026</div>
+    </div>
+  </div>
+  <nav>
+    <a href="/" class="nav-link active">Play</a>
+    <a href="/dashboard" class="nav-link">Analytics ↗</a>
+    <a href="/model-generator" class="nav-link">🤖 Model Lab</a>
+  </nav>
+</header>
+
+<main class="parlour">
+
+  <aside class="side-panel left">
+    <h2 class="panel-title">House rules</h2>
+    <ol class="rules">
+      <li>Match three symbols to win the listed multiplier on your bet.</li>
+      <li>Match any two and your bet is returned.</li>
+      <li>The reels are independently and uniformly drawn — no streaks, no patterns.</li>
+      <li>If credits hit zero, the house refills you. This is a demo, not a casino.</li>
+    </ol>
+
+    <h2 class="panel-title">Paytable</h2>
+    <table class="paytable">
+      <tbody>
+        <tr><td class="combo">💎 💎 💎</td><td class="mult">×50</td></tr>
+        <tr><td class="combo">7️⃣ 7️⃣ 7️⃣</td><td class="mult">×20</td></tr>
+        <tr><td class="combo">⭐ ⭐ ⭐</td><td class="mult">×10</td></tr>
+        <tr><td class="combo">🍋 🍋 🍋</td><td class="mult">×6</td></tr>
+        <tr><td class="combo">🍒 🍒 🍒</td><td class="mult">×4</td></tr>
+        <tr><td class="combo">Any pair</td><td class="mult">×1</td></tr>
+      </tbody>
+    </table>
+  </aside>
+
+  <section class="machine-frame">
+    <div class="bulb-row">
+      <span class="bulb"></span><span class="bulb"></span><span class="bulb"></span>
+      <span class="bulb"></span><span class="bulb"></span><span class="bulb"></span>
+      <span class="bulb"></span><span class="bulb"></span><span class="bulb"></span>
+    </div>
+
+    <div class="machine">
+      <div class="machine-banner">
+        <div class="banner-line"></div>
+        <div class="banner-text">Lucky Sevens</div>
+        <div class="banner-line"></div>
+      </div>
+
+      <div class="display-window">
+        <div class="reel" id="reel-0"><div class="reel-strip"><span>🍒</span></div></div>
+        <div class="reel" id="reel-1"><div class="reel-strip"><span>🍒</span></div></div>
+        <div class="reel" id="reel-2"><div class="reel-strip"><span>🍒</span></div></div>
+        <div class="payline"></div>
+      </div>
+
+      <div class="message-tape">
+        <span id="message">Press spin to play.</span>
+      </div>
+
+      <div class="control-deck">
+        <div class="readout">
+          <div class="readout-label">Credits</div>
+          <div class="readout-value" id="credits">100</div>
+        </div>
+        <div class="readout">
+          <div class="readout-label">Bet</div>
+          <div class="bet-controls">
+            <button class="bet-btn" id="bet-down">−</button>
+            <span class="bet-val" id="bet">5</span>
+            <button class="bet-btn" id="bet-up">+</button>
+          </div>
+        </div>
+        <div class="readout">
+          <div class="readout-label">Won</div>
+          <div class="readout-value won" id="total-won">0</div>
+        </div>
+      </div>
+
+      <button class="spin-lever" id="spin-btn">
+        <span>Spin</span>
+      </button>
+    </div>
+
+    <div class="bulb-row">
+      <span class="bulb"></span><span class="bulb"></span><span class="bulb"></span>
+      <span class="bulb"></span><span class="bulb"></span><span class="bulb"></span>
+      <span class="bulb"></span><span class="bulb"></span><span class="bulb"></span>
+    </div>
+  </section>
+
+  <aside class="side-panel right">
+    <h2 class="panel-title">Live session</h2>
+    <div class="live-stat">
+      <div class="ls-label">Spins played</div>
+      <div class="ls-value" id="ls-spins">0</div>
+    </div>
+    <div class="live-stat">
+      <div class="ls-label">Hit frequency</div>
+      <div class="ls-value" id="ls-hit">—</div>
+    </div>
+    <div class="live-stat">
+      <div class="ls-label">Actual RTP</div>
+      <div class="ls-value" id="ls-rtp">—</div>
+    </div>
+    <div class="live-stat">
+      <div class="ls-label">Biggest hit</div>
+      <div class="ls-value" id="ls-biggest">0</div>
+    </div>
+    <div class="live-stat">
+      <div class="ls-label">Net P/L</div>
+      <div class="ls-value" id="ls-net">0</div>
+    </div>
+
+    <a href="/dashboard" class="dash-cta">
+      <span>Open full analytics</span>
+      <span class="arrow">→</span>
+    </a>
+    <button class="reset-btn" id="reset-btn">Reset session</button>
+  </aside>
+
+</main>
+
+<footer class="bottom-bar">
+  <span>For entertainment & math demonstration only. No real currency.</span>
+  <span class="kbd-hint">Press <kbd>Space</kbd> to spin</span>
+</footer>
+
+<script src="static/game.js"></script>
+</body>
+</html>
