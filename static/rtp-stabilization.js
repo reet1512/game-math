@@ -6,7 +6,7 @@
 const RTP_STABILIZATION = {
   // Configuration
   config: {
-    maxSpins: 10000,
+    maxSpins: 1000000,
     animationDuration: 3000, // ms
     gridLines: 10,
     sampleInterval: 50, // Draw every N spins
